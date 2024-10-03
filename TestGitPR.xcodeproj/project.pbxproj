@@ -14,6 +14,7 @@
 		EDF900CF2CAEF3FD0058C269 /* CalculatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900CE2CAEF3FD0058C269 /* CalculatorButton.swift */; };
 		EDF900D12CAEF68C0058C269 /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900D02CAEF68C0058C269 /* NotesView.swift */; };
 		EDF900D32CAEF7110058C269 /* CalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900D22CAEF7110058C269 /* CalculatorView.swift */; };
+		EDF900D52CAEFA030058C269 /* AudioRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900D42CAEFA030058C269 /* AudioRecorderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		EDF900CE2CAEF3FD0058C269 /* CalculatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorButton.swift; sourceTree = "<group>"; };
 		EDF900D02CAEF68C0058C269 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
 		EDF900D22CAEF7110058C269 /* CalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorView.swift; sourceTree = "<group>"; };
+		EDF900D42CAEFA030058C269 /* AudioRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				EDF900C62CAEF2E10058C269 /* Preview Content */,
 				EDF900D02CAEF68C0058C269 /* NotesView.swift */,
 				EDF900D22CAEF7110058C269 /* CalculatorView.swift */,
+				EDF900D42CAEFA030058C269 /* AudioRecorderView.swift */,
 			);
 			path = TestGitPR;
 			sourceTree = "<group>";
@@ -153,6 +156,7 @@
 				EDF900CF2CAEF3FD0058C269 /* CalculatorButton.swift in Sources */,
 				EDF900D12CAEF68C0058C269 /* NotesView.swift in Sources */,
 				EDF900C02CAEF2E00058C269 /* TestGitPRApp.swift in Sources */,
+				EDF900D52CAEFA030058C269 /* AudioRecorderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +286,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TestGitPR/Preview Content\"";
-				DEVELOPMENT_TEAM = 57XEBN6426;
+				DEVELOPMENT_TEAM = 2F338LPGG7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -321,7 +325,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TestGitPR/Preview Content\"";
-				DEVELOPMENT_TEAM = 57XEBN6426;
+				DEVELOPMENT_TEAM = 2F338LPGG7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
