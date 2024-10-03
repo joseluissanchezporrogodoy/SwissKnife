@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  CalculatorView.swift
 //  TestGitPR
 //
 //  Created by JLSANCHEZP on 3/10/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct CalculatorView: View {
     @State private var display = "0"
     @State private var currentNumber = ""
     @State private var previousNumber = ""
@@ -54,7 +54,7 @@ struct ContentView: View {
             display = currentNumber
 
         case "+", "-", "×", "÷":
-            if Double(currentNumber) != nil {
+            if let number = Double(currentNumber) {
                 previousNumber = currentNumber
                 currentNumber = ""
                 switch button {
@@ -86,6 +86,7 @@ struct ContentView: View {
     }
 }
 
+
 #Preview {
-    ContentView()
+    CalculatorView()
 }
