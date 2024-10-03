@@ -54,7 +54,7 @@ struct ContentView: View {
             display = currentNumber
 
         case "+", "-", "×", "÷":
-            if let number = Double(currentNumber) {
+            if Double(currentNumber) != nil {
                 previousNumber = currentNumber
                 currentNumber = ""
                 switch button {
