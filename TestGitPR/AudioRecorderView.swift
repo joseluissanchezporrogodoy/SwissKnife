@@ -46,9 +46,17 @@ class AudioRecorder: ObservableObject {
     @Published var isRecording = false
     
     func requestPermission() {
-        AVAudioSession.sharedInstance().requestRecordPermission { granted in
-            if !granted {
-                print("Permission to use the microphone was denied.")
+        if #available(iOS 17.0, *) {
+            AVAudioApplication.requestRecordPermission { granted in
+                if !granted {
+                    print("Permission to use the microphone was denied.")
+                }
+            }
+        } else {
+            AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                if !granted {
+                    print("Permission to use the microphone was denied.")
+                }
             }
         }
     }
@@ -81,6 +89,7 @@ class AudioRecorder: ObservableObject {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }
+
 #Preview {
     AudioRecorderView()
 }
