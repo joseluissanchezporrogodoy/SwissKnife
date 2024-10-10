@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EDF900C02CAEF2E00058C269 /* TestGitPRApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900BF2CAEF2E00058C269 /* TestGitPRApp.swift */; };
+		EDF900C02CAEF2E00058C269 /* SwissKnifeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900BF2CAEF2E00058C269 /* SwissKnifeApp.swift */; };
 		EDF900C22CAEF2E00058C269 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900C12CAEF2E00058C269 /* ContentView.swift */; };
 		EDF900C42CAEF2E10058C269 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDF900C32CAEF2E10058C269 /* Assets.xcassets */; };
 		EDF900C82CAEF2E10058C269 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDF900C72CAEF2E10058C269 /* Preview Assets.xcassets */; };
@@ -18,11 +18,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EDF900BC2CAEF2E00058C269 /* TestGitPR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestGitPR.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		EDF900BF2CAEF2E00058C269 /* TestGitPRApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestGitPRApp.swift; sourceTree = "<group>"; };
+		EDF900BC2CAEF2E00058C269 /* SwissKnife.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwissKnife.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDF900BF2CAEF2E00058C269 /* SwissKnifeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwissKnifeApp.swift; sourceTree = "<group>"; };
 		EDF900C12CAEF2E00058C269 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EDF900C32CAEF2E10058C269 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		EDF900C52CAEF2E10058C269 /* TestGitPR.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestGitPR.entitlements; sourceTree = "<group>"; };
+		EDF900C52CAEF2E10058C269 /* SwissKnife.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwissKnife.entitlements; sourceTree = "<group>"; };
 		EDF900C72CAEF2E10058C269 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EDF900CE2CAEF3FD0058C269 /* CalculatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorButton.swift; sourceTree = "<group>"; };
 		EDF900D02CAEF68C0058C269 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
@@ -44,7 +44,7 @@
 		EDF900B32CAEF2E00058C269 = {
 			isa = PBXGroup;
 			children = (
-				EDF900BE2CAEF2E00058C269 /* TestGitPR */,
+				EDF900BE2CAEF2E00058C269 /* SwissKnife */,
 				EDF900BD2CAEF2E00058C269 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,25 +52,25 @@
 		EDF900BD2CAEF2E00058C269 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EDF900BC2CAEF2E00058C269 /* TestGitPR.app */,
+				EDF900BC2CAEF2E00058C269 /* SwissKnife.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EDF900BE2CAEF2E00058C269 /* TestGitPR */ = {
+		EDF900BE2CAEF2E00058C269 /* SwissKnife */ = {
 			isa = PBXGroup;
 			children = (
-				EDF900BF2CAEF2E00058C269 /* TestGitPRApp.swift */,
+				EDF900BF2CAEF2E00058C269 /* SwissKnifeApp.swift */,
 				EDF900C12CAEF2E00058C269 /* ContentView.swift */,
 				EDF900CE2CAEF3FD0058C269 /* CalculatorButton.swift */,
 				EDF900C32CAEF2E10058C269 /* Assets.xcassets */,
-				EDF900C52CAEF2E10058C269 /* TestGitPR.entitlements */,
+				EDF900C52CAEF2E10058C269 /* SwissKnife.entitlements */,
 				EDF900C62CAEF2E10058C269 /* Preview Content */,
 				EDF900D02CAEF68C0058C269 /* NotesView.swift */,
 				EDF900D22CAEF7110058C269 /* CalculatorView.swift */,
 				EDF900D42CAEFA030058C269 /* AudioRecorderView.swift */,
 			);
-			path = TestGitPR;
+			path = SwissKnife;
 			sourceTree = "<group>";
 		};
 		EDF900C62CAEF2E10058C269 /* Preview Content */ = {
@@ -84,9 +84,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EDF900BB2CAEF2E00058C269 /* TestGitPR */ = {
+		EDF900BB2CAEF2E00058C269 /* SwissKnife */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EDF900CB2CAEF2E10058C269 /* Build configuration list for PBXNativeTarget "TestGitPR" */;
+			buildConfigurationList = EDF900CB2CAEF2E10058C269 /* Build configuration list for PBXNativeTarget "SwissKnife" */;
 			buildPhases = (
 				EDF900B82CAEF2E00058C269 /* Sources */,
 				EDF900B92CAEF2E00058C269 /* Frameworks */,
@@ -96,9 +96,9 @@
 			);
 			dependencies = (
 			);
-			name = TestGitPR;
+			name = SwissKnife;
 			productName = TestGitPR;
-			productReference = EDF900BC2CAEF2E00058C269 /* TestGitPR.app */;
+			productReference = EDF900BC2CAEF2E00058C269 /* SwissKnife.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -116,7 +116,7 @@
 					};
 				};
 			};
-			buildConfigurationList = EDF900B72CAEF2E00058C269 /* Build configuration list for PBXProject "TestGitPR" */;
+			buildConfigurationList = EDF900B72CAEF2E00058C269 /* Build configuration list for PBXProject "SwissKnife" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -129,7 +129,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EDF900BB2CAEF2E00058C269 /* TestGitPR */,
+				EDF900BB2CAEF2E00058C269 /* SwissKnife */,
 			);
 		};
 /* End PBXProject section */
@@ -155,7 +155,7 @@
 				EDF900D32CAEF7110058C269 /* CalculatorView.swift in Sources */,
 				EDF900CF2CAEF3FD0058C269 /* CalculatorButton.swift in Sources */,
 				EDF900D12CAEF68C0058C269 /* NotesView.swift in Sources */,
-				EDF900C02CAEF2E00058C269 /* TestGitPRApp.swift in Sources */,
+				EDF900C02CAEF2E00058C269 /* SwissKnifeApp.swift in Sources */,
 				EDF900D52CAEFA030058C269 /* AudioRecorderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -358,7 +358,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		EDF900B72CAEF2E00058C269 /* Build configuration list for PBXProject "TestGitPR" */ = {
+		EDF900B72CAEF2E00058C269 /* Build configuration list for PBXProject "SwissKnife" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EDF900C92CAEF2E10058C269 /* Debug */,
@@ -367,7 +367,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EDF900CB2CAEF2E10058C269 /* Build configuration list for PBXNativeTarget "TestGitPR" */ = {
+		EDF900CB2CAEF2E10058C269 /* Build configuration list for PBXNativeTarget "SwissKnife" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EDF900CC2CAEF2E10058C269 /* Debug */,
