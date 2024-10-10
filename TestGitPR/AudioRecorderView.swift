@@ -7,86 +7,287 @@
 
 import SwiftUI
 import AVFoundation
+
 struct AudioRecorderView: View {
     @StateObject private var audioRecorder = AudioRecorder()
+    @State private var isEditing = false
     
     var body: some View {
-        VStack {
-            if audioRecorder.isRecording {
-                Text("Grabando...")
-                    .font(.headline)
-                    .padding()
-            } else {
-                Text("Grabación detenida")
-                    .font(.headline)
-                    .padding()
-            }
-            
-            Button(action: {
-                audioRecorder.isRecording ? audioRecorder.stopRecording() : audioRecorder.startRecording()
-            }) {
-                Text(audioRecorder.isRecording ? "Detener Grabación" : "Iniciar Grabación")
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(audioRecorder.isRecording ? Color.red : Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+        NavigationView {
+            VStack {
+                if audioRecorder.isRecording {
+                    Text("Grabando... \(audioRecorder.recordingTimeFormatted)")
+                        .font(.headline)
+                        .padding()
+                    
+                    AudioWaveView(audioLevel: audioRecorder.audioLevel)
+                        .frame(height: 100)
+                        .padding()
+                }
+                
+                Button(action: {
+                    audioRecorder.isRecording ? audioRecorder.stopRecording() : audioRecorder.startRecording()
+                }) {
+                    Text(audioRecorder.isRecording ? "Detener Grabación" : "Iniciar Grabación")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(audioRecorder.isRecording ? Color.red : Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding()
+                
+                List {
+                    ForEach(audioRecorder.recordings, id: \.url) { recording in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(recording.title)
+                                Text("\(recording.durationFormatted)")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                            Spacer()
+                            Image(systemName: audioRecorder.isPlaying(recording) ? "stop.circle.fill" : "play.circle.fill")
+                                .foregroundColor(audioRecorder.isPlaying(recording) ? .red : .blue)
+                        }
+                        .contentShape(Rectangle()) // Hace que toda la fila sea interactuable
+                        .onTapGesture {
+                            audioRecorder.togglePlayback(recording)
+                        }
+                    }
+                    .onDelete(perform: isEditing ? audioRecorder.deleteRecording : nil)
+                }
+                
+                Spacer()
             }
             .padding()
-        }
-        .padding()
-        .onAppear {
-            audioRecorder.requestPermission()
+            .navigationTitle("Grabadora")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(isEditing ? "Hecho" : "Editar") {
+                        isEditing.toggle()
+                    }
+                }
+            }
+            .onAppear {
+                audioRecorder.requestPermission()
+                audioRecorder.loadRecordings()
+            }
         }
     }
 }
 
-class AudioRecorder: ObservableObject {
+class AudioRecorder: NSObject, ObservableObject, AVAudioPlayerDelegate {
     private var audioRecorder: AVAudioRecorder?
+    private var audioPlayer: AVAudioPlayer?
+    private var timer: Timer?
     @Published var isRecording = false
+    @Published var recordings: [Recording] = []
+    @Published var audioLevel: Float = 0.0
+    @Published var recordingTimeFormatted = "00:00"
+    @Published var currentPlayingURL: URL? // URL de la grabación actual en reproducción
     
     func requestPermission() {
-        if #available(iOS 17.0, *) {
-            AVAudioApplication.requestRecordPermission { granted in
-                if !granted {
-                    print("Permission to use the microphone was denied.")
-                }
-            }
-        } else {
-            AVAudioSession.sharedInstance().requestRecordPermission { granted in
-                if !granted {
-                    print("Permission to use the microphone was denied.")
-                }
+        AVAudioSession.sharedInstance().requestRecordPermission { granted in
+            if !granted {
+                print("Permiso para usar el micrófono denegado.")
             }
         }
     }
     
     func startRecording() {
-        let audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+        configureAudioSession() // Configurar el AVAudioSession antes de comenzar a grabar
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy,HH:mm:ss"
+        let filename = "record_\(formatter.string(from: Date())).m4a"
+        let audioFilename = getDocumentsDirectory().appendingPathComponent(filename)
+        
+        print("Ruta del archivo de grabación: \(audioFilename)") // Verifica la ruta del archivo
         
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 44100,
-            AVNumberOfChannelsKey: 2,
+            AVNumberOfChannelsKey: 1,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
         ]
         
         do {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+            audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
             isRecording = true
+            startTimer()
         } catch {
-            print("Could not start recording: \(error.localizedDescription)")
+            print("No se pudo iniciar la grabación: \(error.localizedDescription)")
         }
     }
     
     func stopRecording() {
         audioRecorder?.stop()
         isRecording = false
+        stopTimer()
+        loadRecordings() // Cargar las grabaciones después de detener la grabación
+        deactivateAudioSession() // Desactivar el AVAudioSession al finalizar la grabación
+    }
+    
+    private func configureAudioSession() {
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
+            try audioSession.setActive(true)
+        } catch {
+            print("Error al configurar el AVAudioSession: \(error.localizedDescription)")
+        }
+    }
+    
+    private func deactivateAudioSession() {
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setActive(false)
+        } catch {
+            print("Error al desactivar el AVAudioSession: \(error.localizedDescription)")
+        }
+    }
+    
+    func togglePlayback(_ recording: Recording) {
+        if isPlaying(recording) {
+            stopPlayback()
+        } else {
+            playRecording(recording)
+        }
+    }
+    
+    func playRecording(_ recording: Recording) {
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: recording.url.path) {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: recording.url)
+                audioPlayer?.delegate = self
+                audioPlayer?.play()
+                currentPlayingURL = recording.url
+            } catch {
+                print("No se pudo reproducir la grabación: \(error.localizedDescription)")
+            }
+        } else {
+            print("El archivo de audio no existe en la ruta: \(recording.url.path)")
+        }
+    }
+    
+    func stopPlayback() {
+        audioPlayer?.stop()
+        currentPlayingURL = nil
+    }
+    
+    func isPlaying(_ recording: Recording) -> Bool {
+        return currentPlayingURL == recording.url
+    }
+    
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            self.updateAudioLevel()
+        }
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    private func updateAudioLevel() {
+        guard let audioRecorder = audioRecorder else { return }
+        audioRecorder.updateMeters()
+        audioLevel = audioRecorder.averagePower(forChannel: 0)
+        
+        let normalizedLevel = normalizeAudioLevel(audioLevel)
+        DispatchQueue.main.async {
+            self.audioLevel = normalizedLevel
+        }
+        
+        let currentTime = Int(audioRecorder.currentTime)
+        let minutes = currentTime / 60
+        let seconds = currentTime % 60
+        recordingTimeFormatted = String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    // Normalizar el nivel de audio para mejorar la visualización de la "nube de audio"
+    private func normalizeAudioLevel(_ level: Float) -> Float {
+        let minLevel: Float = -80.0
+        let maxLevel: Float = 0.0
+        let range = maxLevel - minLevel
+        let adjustedLevel = max(level, minLevel)
+        return (adjustedLevel - minLevel) / range
+    }
+    
+    func loadRecordings() {
+        recordings.removeAll()
+        
+        let directory = getDocumentsDirectory()
+        let fileManager = FileManager.default
+        
+        do {
+            let files = try fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            for file in files where file.pathExtension == "m4a" {
+                let recording = Recording(url: file)
+                recordings.append(recording)
+            }
+            recordings.sort { $0.url.lastPathComponent > $1.url.lastPathComponent }
+        } catch {
+            print("No se pudieron cargar las grabaciones: \(error.localizedDescription)")
+        }
+    }
+    
+    func deleteRecording(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let recording = recordings[index]
+            do {
+                try FileManager.default.removeItem(at: recording.url)
+                recordings.remove(at: index)
+            } catch {
+                print("No se pudo eliminar la grabación: \(error.localizedDescription)")
+            }
+        }
     }
     
     private func getDocumentsDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+}
+
+// Conformidad de AudioRecorder con el protocolo AVAudioPlayerDelegate
+extension AudioRecorder {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        currentPlayingURL = nil // Resetea el estado de reproducción cuando termina el audio
+    }
+}
+
+struct Recording {
+    let url: URL
+    var title: String {
+        url.deletingPathExtension().lastPathComponent
+    }
+    var duration: TimeInterval {
+        let asset = AVURLAsset(url: url)
+        return asset.duration.seconds
+    }
+    var durationFormatted: String {
+        let minutes = Int(duration) / 60
+        let seconds = Int(duration) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+}
+
+struct AudioWaveView: View {
+    var audioLevel: Float
+    
+    var body: some View {
+        GeometryReader { geometry in
+            let height = CGFloat(max(10.0, geometry.size.height * CGFloat(audioLevel)))
+            RoundedRectangle(cornerRadius: 25)
+                .fill(Color.red)
+                .frame(height: height)
+                .animation(.linear(duration: 0.1), value: height)
+        }
     }
 }
 
