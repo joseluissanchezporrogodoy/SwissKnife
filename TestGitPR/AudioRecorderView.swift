@@ -47,10 +47,12 @@ struct AudioRecorderView: View {
                                     .foregroundColor(.gray)
                             }
                             Spacer()
+                            Image(systemName: audioRecorder.isPlaying(recording) ? "stop.circle.fill" : "play.circle.fill")
+                                .foregroundColor(audioRecorder.isPlaying(recording) ? .red : .blue)
                         }
                         .contentShape(Rectangle()) // Hace que toda la fila sea interactuable
                         .onTapGesture {
-                            audioRecorder.playRecording(recording)
+                            audioRecorder.togglePlayback(recording)
                         }
                     }
                     .onDelete(perform: isEditing ? audioRecorder.deleteRecording : nil)
@@ -75,7 +77,7 @@ struct AudioRecorderView: View {
     }
 }
 
-class AudioRecorder: ObservableObject {
+class AudioRecorder: NSObject, ObservableObject, AVAudioPlayerDelegate {
     private var audioRecorder: AVAudioRecorder?
     private var audioPlayer: AVAudioPlayer?
     private var timer: Timer?
@@ -83,6 +85,7 @@ class AudioRecorder: ObservableObject {
     @Published var recordings: [Recording] = []
     @Published var audioLevel: Float = 0.0
     @Published var recordingTimeFormatted = "00:00"
+    @Published var currentPlayingURL: URL? // URL de la grabación actual en reproducción
     
     func requestPermission() {
         AVAudioSession.sharedInstance().requestRecordPermission { granted in
@@ -93,6 +96,8 @@ class AudioRecorder: ObservableObject {
     }
     
     func startRecording() {
+        configureAudioSession() // Configurar el AVAudioSession antes de comenzar a grabar
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "dd-MM-yyyy,HH:mm:ss"
         let filename = "record_\(formatter.string(from: Date())).m4a"
@@ -123,6 +128,34 @@ class AudioRecorder: ObservableObject {
         isRecording = false
         stopTimer()
         loadRecordings() // Cargar las grabaciones después de detener la grabación
+        deactivateAudioSession() // Desactivar el AVAudioSession al finalizar la grabación
+    }
+    
+    private func configureAudioSession() {
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
+            try audioSession.setActive(true)
+        } catch {
+            print("Error al configurar el AVAudioSession: \(error.localizedDescription)")
+        }
+    }
+    
+    private func deactivateAudioSession() {
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setActive(false)
+        } catch {
+            print("Error al desactivar el AVAudioSession: \(error.localizedDescription)")
+        }
+    }
+    
+    func togglePlayback(_ recording: Recording) {
+        if isPlaying(recording) {
+            stopPlayback()
+        } else {
+            playRecording(recording)
+        }
     }
     
     func playRecording(_ recording: Recording) {
@@ -130,13 +163,24 @@ class AudioRecorder: ObservableObject {
         if fileManager.fileExists(atPath: recording.url.path) {
             do {
                 audioPlayer = try AVAudioPlayer(contentsOf: recording.url)
+                audioPlayer?.delegate = self
                 audioPlayer?.play()
+                currentPlayingURL = recording.url
             } catch {
                 print("No se pudo reproducir la grabación: \(error.localizedDescription)")
             }
         } else {
             print("El archivo de audio no existe en la ruta: \(recording.url.path)")
         }
+    }
+    
+    func stopPlayback() {
+        audioPlayer?.stop()
+        currentPlayingURL = nil
+    }
+    
+    func isPlaying(_ recording: Recording) -> Bool {
+        return currentPlayingURL == recording.url
     }
     
     private func startTimer() {
@@ -207,6 +251,13 @@ class AudioRecorder: ObservableObject {
     
     private func getDocumentsDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+}
+
+// Conformidad de AudioRecorder con el protocolo AVAudioPlayerDelegate
+extension AudioRecorder {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        currentPlayingURL = nil // Resetea el estado de reproducción cuando termina el audio
     }
 }
 
