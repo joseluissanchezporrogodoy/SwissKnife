@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ED6515232CB93596002F2249 /* QRCodeGeneratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6515222CB93596002F2249 /* QRCodeGeneratorView.swift */; };
 		EDF900C02CAEF2E00058C269 /* SwissKnifeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900BF2CAEF2E00058C269 /* SwissKnifeApp.swift */; };
 		EDF900C22CAEF2E00058C269 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF900C12CAEF2E00058C269 /* ContentView.swift */; };
 		EDF900C42CAEF2E10058C269 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDF900C32CAEF2E10058C269 /* Assets.xcassets */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		ED6515222CB93596002F2249 /* QRCodeGeneratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeGeneratorView.swift; sourceTree = "<group>"; };
 		EDF900BC2CAEF2E00058C269 /* SwissKnife.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwissKnife.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDF900BF2CAEF2E00058C269 /* SwissKnifeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwissKnifeApp.swift; sourceTree = "<group>"; };
 		EDF900C12CAEF2E00058C269 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				EDF900C52CAEF2E10058C269 /* SwissKnife.entitlements */,
 				EDF900C62CAEF2E10058C269 /* Preview Content */,
 				EDF900D02CAEF68C0058C269 /* NotesView.swift */,
+				ED6515222CB93596002F2249 /* QRCodeGeneratorView.swift */,
 				EDF900D22CAEF7110058C269 /* CalculatorView.swift */,
 				EDF900D42CAEFA030058C269 /* AudioRecorderView.swift */,
 			);
@@ -156,6 +159,7 @@
 				EDF900CF2CAEF3FD0058C269 /* CalculatorButton.swift in Sources */,
 				EDF900D12CAEF68C0058C269 /* NotesView.swift in Sources */,
 				EDF900C02CAEF2E00058C269 /* SwissKnifeApp.swift in Sources */,
+				ED6515232CB93596002F2249 /* QRCodeGeneratorView.swift in Sources */,
 				EDF900D52CAEFA030058C269 /* AudioRecorderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
