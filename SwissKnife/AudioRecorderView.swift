@@ -47,7 +47,7 @@ struct AudioRecorderView: View {
                                     .foregroundColor(.gray)
                             }
                             Spacer()
-                            Image(systemName: audioRecorder.isPlaying(recording) ? "stop.circle.fill" : "play.circle.fill")
+                            Image(systemName: audioRecorder.isPlaying(recording) ? "pause.circle.fill" : "play.circle.fill")
                                 .foregroundColor(audioRecorder.isPlaying(recording) ? .red : .blue)
                         }
                         .contentShape(Rectangle()) // Hace que toda la fila sea interactuable
@@ -86,6 +86,7 @@ class AudioRecorder: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var audioLevel: Float = 0.0
     @Published var recordingTimeFormatted = "00:00"
     @Published var currentPlayingURL: URL? // URL de la grabación actual en reproducción
+    private var currentPlaybackTime: TimeInterval = 0.0 // Tiempo actual de reproducción
     
     func requestPermission() {
         AVAudioSession.sharedInstance().requestRecordPermission { granted in
@@ -152,7 +153,7 @@ class AudioRecorder: NSObject, ObservableObject, AVAudioPlayerDelegate {
     
     func togglePlayback(_ recording: Recording) {
         if isPlaying(recording) {
-            stopPlayback()
+            pausePlayback()
         } else {
             playRecording(recording)
         }
@@ -162,8 +163,12 @@ class AudioRecorder: NSObject, ObservableObject, AVAudioPlayerDelegate {
         let fileManager = FileManager.default
         if fileManager.fileExists(atPath: recording.url.path) {
             do {
-                audioPlayer = try AVAudioPlayer(contentsOf: recording.url)
-                audioPlayer?.delegate = self
+                if audioPlayer == nil || currentPlayingURL != recording.url {
+                    audioPlayer = try AVAudioPlayer(contentsOf: recording.url)
+                    audioPlayer?.delegate = self
+                    currentPlaybackTime = 0.0
+                }
+                audioPlayer?.currentTime = currentPlaybackTime
                 audioPlayer?.play()
                 currentPlayingURL = recording.url
             } catch {
@@ -174,13 +179,19 @@ class AudioRecorder: NSObject, ObservableObject, AVAudioPlayerDelegate {
         }
     }
     
+    func pausePlayback() {
+        audioPlayer?.pause()
+        currentPlaybackTime = audioPlayer?.currentTime ?? 0.0
+    }
+    
     func stopPlayback() {
         audioPlayer?.stop()
+        currentPlaybackTime = 0.0
         currentPlayingURL = nil
     }
     
     func isPlaying(_ recording: Recording) -> Bool {
-        return currentPlayingURL == recording.url
+        return currentPlayingURL == recording.url && audioPlayer?.isPlaying == true
     }
     
     private func startTimer() {
@@ -257,7 +268,8 @@ class AudioRecorder: NSObject, ObservableObject, AVAudioPlayerDelegate {
 // Conformidad de AudioRecorder con el protocolo AVAudioPlayerDelegate
 extension AudioRecorder {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        currentPlayingURL = nil // Resetea el estado de reproducción cuando termina el audio
+        currentPlayingURL = nil
+        currentPlaybackTime = 0.0
     }
 }
 
